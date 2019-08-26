@@ -1,0 +1,76 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "AWS CloudFormation Sample Template: Creates a Hyrax stack using a single EC2 instance. This template demonstrates using the UserData to install the packages and files necessary to deploy Hyrax at instance launch time. **WARNING** This template creates an Amazon EC2 instance. You will be billed for the AWS resources used if you create a stack from this template.",
+    "Parameters": {
+        "KeyName": {
+            "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance",
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
+        }
+    },
+    "Resources": {
+        "HyraxAMI": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": "ami-04c394acb6c1901f4",
+                "InstanceType": "t2.large",
+                "SecurityGroupIds": [
+                    "Hyrax"
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "CentOS7Hyrax1.15.4"
+                    },
+                    {
+                        "Key": "Owner",
+                        "Value": "SK"
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!\/bin\/bash -xe\n",
+                                "yum update -y aws-cfn-bootstrap\n",
+                                "cd \/home\/centos\n",
+                                "curl -s -o bes.rpm http:\/\/s3.amazonaws.com\/opendap.travis.build\/bes-3.20.4-1.static.el7.x86_64.rpm\n",
+                                "curl -s -o libdap.rpm http:\/\/s3.amazonaws.com\/opendap.travis.build\/libdap-3.20.3-1.el7.x86_64.rpm\n",
+                                "yum install libdap.rpm -y\n",
+                                "yum install bes.rpm -y\n",
+                                "rm -f libdap.rpm\n",
+                                "rm -f bes.rpm\n",
+                                "service besd start\n",
+                                "curl -s -o olfs.tgz https:\/\/www.opendap.org\/pub\/olfs\/olfs-1.18.4-webapp.tgz\n",
+                                "tar -xvf olfs.tgz --strip-components=1 --directory \/var\/lib\/tomcat\/webapps\n",
+                                "rm -f olfs.tgz\n",
+                                "service tomcat start"
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "WebsiteURL": {
+            "Description": "URL for newly created Hyrax stack",
+            "Value": {
+                "Fn::Join": [
+                    "",
+                    [
+                        "http:\/\/",
+                        {
+                            "Fn::GetAtt": [
+                                "HyraxAMI",
+                                "PublicIp"
+                            ]
+                        },
+                        ":8080\/opendap\/data"
+                    ]
+                ]
+            }
+        }
+    }
+}
