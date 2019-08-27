@@ -16,16 +16,14 @@ are fine.
 Each of the templates will name the AMI (i.e., the name that shows up
 in the AWS console) using the value of Tags key Name
 
-"Tags": [
-{
-    "Key": "Name",
-    "Value": "CentOS7Hyrax1.15.4"
-},
-{
-    "Key": "Owner",
-    "Value": "SK"
-}
-],
+To make a CentOS7 AMI from your local machine using the AWS cli tools,
+use:
+
+    aws cloudformation deploy --template-file \
+        latestHyraxTemplateCentos7.json --stack-name Hyrax-8 \
+        --parameter-overrides KeyName=opendap-test-aws-east-2017
+
+Note that the PEM file name lacks the '.pem' extension.
 
 The AMI instamce numbers were fund using the Cloud Market site:
 https://thecloudmarket.com
