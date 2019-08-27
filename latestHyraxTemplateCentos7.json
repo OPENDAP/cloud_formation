@@ -13,7 +13,7 @@
             "Type": "AWS::EC2::Instance",
             "Properties": {
                 "ImageId": "ami-6d1c2007",
-                "InstanceType": "t2.large",
+                "InstanceType": "t2.xlarge",
                 "SecurityGroupIds": [
                     "Hyrax"
                 ],
@@ -23,11 +23,11 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "CentOS7Hyrax1.15.4"
+                        "Value": "Hyrax Latest CentOS7"
                     },
                     {
                         "Key": "Owner",
-                        "Value": "SK"
+                        "Value": "OPeNDAP"
                     }
                 ],
                 "UserData": {
@@ -35,20 +35,19 @@
                         "Fn::Join": [
                             "\n",
                             [
-                                "#!\/bin\/bash -xe",
+                                "#!/bin/bash -xe",
                                 "yum update -y",
-                                "yum install mc -y",
-			        "yum install java-1.8.0-openjdk.x86_64 -y",
-			        "yum install tomcat -y",
-                                "curl -s -o bes.rpm http:\/\/s3.amazonaws.com\/opendap.travis.build\/bes-3.20.4-1.static.el7.x86_64.rpm",
-                                "curl -s -o libdap.rpm http:\/\/s3.amazonaws.com\/opendap.travis.build\/libdap-3.20.3-1.el7.x86_64.rpm",
-                                "yum install libdap.rpm -y",
-                                "yum install bes.rpm -y",
-                                "rm -f libdap.rpm",
-                                "rm -f bes.rpm",
+                                "yum install mc java-1.8.0-openjdk.x86_64 tomcat awscli -y",
+                                
+                                "aws --no-sign-request s3 cp s3://opendap.travis.build/bes-3.20.4-1.static.el7.x86_64.rpm bes.rpm",
+                                "aws --no-sign-request s3 cp s3://opendap.travis.build/libdap-3.20.3-1.el7.x86_64.rpm libdap.rpm",
+                                
+                                "yum install libdap.rpm bes.rpm -y",
+                                "rm -f libdap.rpm bes.rpm",
                                 "service besd start",
-                                "curl -s -o olfs.tgz https:\/\/www.opendap.org\/pub\/olfs\/olfs-1.18.4-webapp.tgz",
-                                "tar -xvf olfs.tgz --strip-components=1 --directory \/var\/lib\/tomcat\/webapps",
+                                
+                                "curl -s -o olfs.tgz https://www.opendap.org/pub/olfs/olfs-1.18.4-webapp.tgz",
+                                "tar -xvf olfs.tgz --strip-components=1 --directory /var/lib/tomcat/webapps",
                                 "rm -f olfs.tgz",
                                 "service tomcat start"
                             ]
@@ -65,14 +64,14 @@
                 "Fn::Join": [
                     "",
                     [
-                        "http:\/\/",
+                        "http://",
                         {
                             "Fn::GetAtt": [
                                 "HyraxAMI",
                                 "PublicIp"
                             ]
                         },
-                        ":8080\/opendap\/data"
+                        ":8080/opendap/data"
                     ]
                 ]
             }
