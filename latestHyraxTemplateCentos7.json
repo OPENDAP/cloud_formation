@@ -17,6 +17,9 @@
                 "SecurityGroupIds": [
                     "Hyrax"
                 ],
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
                 "Tags": [
                     {
                         "Key": "Name",
