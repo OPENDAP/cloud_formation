@@ -26,7 +26,10 @@ use:
 Note that the PEM file name lacks the '.pem' extension.
 
 The AMI instamce numbers were fund using the Cloud Market site:
-https://thecloudmarket.com
+https://thecloudmarket.com. 
+
+Amazon has a set of utilities that can be installed by yum. Look at this
+page: https://github.com/OPENDAP/cloud_formation.
 
 The zip file holds a collection of example files that show all kinds
 of ways this service can be used.
