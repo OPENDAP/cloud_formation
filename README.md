@@ -5,6 +5,28 @@ use the RPM packages stored on S3 or www.OPeNDAP.org and support
 CentOS7 adn RedHat7. We might add vversions that build development
 machines in the future.
 
+To use these templates with AWS, goto the CloudFormation services page
+and choose 'Create Stack' on the upper left-hand corner. The only
+parameters that need to be set are the Stack Name (choose something
+innocuous like 'Hyrax-01') and the EC2 KeyPair to enable SSH access to
+the instance (I used our 'test' key). After that, the web interface
+prompts for a number of optional parameters; the defaults for these
+are fine.
+
+Each of the templates will name the AMI (i.e., the name that shows up
+in the AWS console) using the value of Tags key Name
+
+"Tags": [
+{
+    "Key": "Name",
+    "Value": "CentOS7Hyrax1.15.4"
+},
+{
+    "Key": "Owner",
+    "Value": "SK"
+}
+],
+
 The AMI instamce numbers were fund using the Cloud Market site:
 https://thecloudmarket.com
 
