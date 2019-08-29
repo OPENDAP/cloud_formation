@@ -1,0 +1,78 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "This AWS CloudFormation file creates a Hyrax stack using the latest snapshot builds from the OPeNDAP Travis CI build using a single EC2 instance.",
+    "Parameters": {
+        "KeyName": {
+            "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance",
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
+        }
+    },
+    "Resources": {
+        "HyraxAMI": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": "ami-6d1c2007",
+                "InstanceType": "t2.xlarge",
+                "SecurityGroupIds": [
+                    "Hyrax"
+                ],
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "Hyrax Snapshot CentOS7"
+                    },
+                    {
+                        "Key": "Owner",
+                        "Value": "OPeNDAP"
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "\n",
+                            [
+                                "#!/bin/bash -xe",
+                                "yum update -y",
+                                "yum install -y mc java-1.8.0-openjdk.x86_64 tomcat awscli",
+                                
+                                "aws --no-sign-request s3 cp s3://opendap.travis.build/bes-snapshot.static.el7.x86_64.rpm .",
+                                "aws --no-sign-request s3 cp s3://opendap.travis.build/libdap-snapshot.el7.x86_64.rpm .",
+                                
+                                "yum install -y libdap-snapshot.el7.x86_64.rpm bes.rpm bes-snapshot.static.el7.x86_64.rpm",
+                                "service besd start",
+                                
+                                "aws --no-sign-request s3 cp s3://opendap.travis.build/olfs-snapshot-webapp.tgz .",
+                                "tar -xvf olfs-snapshot-webapp.tgz --strip-components=1 --directory /var/lib/tomcat/webapps",
+                                "service tomcat start"
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "WebsiteURL": {
+            "Description": "URL for newly created Hyrax stack",
+            "Value": {
+                "Fn::Join": [
+                    "",
+                    [
+                        "http://",
+                        {
+                            "Fn::GetAtt": [
+                                "HyraxAMI",
+                                "PublicIp"
+                            ]
+                        },
+                        ":8080/opendap/data"
+                    ]
+                ]
+            }
+        }
+    }
+}
