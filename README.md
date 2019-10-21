@@ -1,8 +1,8 @@
 
-This direcotry contains AWS Cloud Formation templates that build
+This directory contains AWS Cloud Formation templates that build
 various sorts of AMIs that run the Hyrax web server. Current versions
 use the RPM packages stored on S3 or www.OPeNDAP.org and support
-CentOS7 adn RedHat7. We might add vversions that build development
+CentOS7 adn RedHat7. We might add versions that build development
 machines in the future.
 
 To use these templates with AWS, goto the CloudFormation services page
