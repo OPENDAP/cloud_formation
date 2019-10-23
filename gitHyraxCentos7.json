@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This AWS CloudFormation file creates a Hyrax stack using the latest snapshot builds from the OPeNDAP Travis CI build using a single EC2 instance.",
+    "Description": "This AWS CloudFormation file creates a VM capable of buildiing Hyrax from git",
     "Parameters": {
         "KeyName": {
             "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance",
@@ -23,7 +23,7 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "Hyrax Snapshot CentOS7"
+                        "Value": "Hyrax Source Build CentOS7"
                     },
                     {
                         "Key": "Owner",
