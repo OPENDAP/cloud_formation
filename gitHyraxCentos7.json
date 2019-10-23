@@ -1,0 +1,76 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "This AWS CloudFormation file creates a Hyrax stack using the latest snapshot builds from the OPeNDAP Travis CI build using a single EC2 instance.",
+    "Parameters": {
+        "KeyName": {
+            "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance",
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
+        }
+    },
+    "Resources": {
+        "HyraxAMI": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": "ami-6d1c2007",
+                "InstanceType": "t2.xlarge",
+                "SecurityGroupIds": [
+                    "Hyrax"
+                ],
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "Hyrax Snapshot CentOS7"
+                    },
+                    {
+                        "Key": "Owner",
+                        "Value": "OPeNDAP"
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "\n",
+                            [
+                                "#!/bin/bash -xe",
+                                "yum update -y",
+                                "yum install -y awscli",
+                                "yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel ant",
+                                "yum install -y ant-junit junit git gcc-c++ flex bison autoconf",
+                                "yum install -y automake libtool emacs openssl-devel",
+                                "yum install -y libuuid-devel readline-devel zlib-devel bzip2",
+                                "yum install -y bzip2-devel libjpeg-devel libxml2-devel",
+                                "yum install -y curl-devel libicu-devel vim bc",
+                                "yum install -y rpm-devel rpm-build redhat-rpm-config",
+                                "git clone https://github.com/opendap/hyrax"
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "WebsiteURL": {
+            "Description": "URL for newly created Hyrax stack",
+            "Value": {
+                "Fn::Join": [
+                    "",
+                    [
+                        "http://",
+                        {
+                            "Fn::GetAtt": [
+                                "HyraxAMI",
+                                "PublicIp"
+                            ]
+                        },
+                        ":8080/opendap/data"
+                    ]
+                ]
+            }
+        }
+    }
+}
