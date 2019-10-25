@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This AWS CloudFormation file creates a VM capable of buildiing Hyrax from git",
+    "Description": "This AWS CloudFormation file creates a VM capable of building Hyrax from git",
     "Parameters": {
         "KeyName": {
             "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance",
@@ -45,7 +45,8 @@
                                 "yum install -y bzip2-devel libjpeg-devel libxml2-devel",
                                 "yum install -y curl-devel libicu-devel vim bc",
                                 "yum install -y rpm-devel rpm-build redhat-rpm-config",
-                                "git clone https://github.com/opendap/hyrax"
+                                "git clone https://github.com/opendap/hyrax /home/centos/hyrax",
+                                "chown -R centos /home/centos/hyrax"
                             ]
                         ]
                     }

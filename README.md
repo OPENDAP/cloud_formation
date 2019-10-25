@@ -19,9 +19,8 @@ in the AWS console) using the value of Tags key Name
 To make a CentOS7 AMI from your local machine using the AWS cli tools,
 use:
 
-    aws cloudformation deploy --template-file \
-        latestHyraxTemplateCentos7.json --stack-name Hyrax-8 \
-        --parameter-overrides KeyName=opendap-test-aws-east-2017
+    aws cloudformation deploy --template-file snapshotHyraxTemplateCentos7.json \
+        --stack-name Hyrax-8 --parameter-overrides KeyName=opendap-test-aws-east-2017
 
 Note that the PEM file name lacks the '.pem' extension.
 
