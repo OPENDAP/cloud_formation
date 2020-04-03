@@ -2,8 +2,8 @@
 This directory contains AWS Cloud Formation templates that build
 various sorts of AMIs that run the Hyrax web server. Current versions
 use the RPM packages stored on S3 or www.OPeNDAP.org and support
-CentOS7 and RedHat7. We might add versions that build development
-machines in the future.
+CentOS7 and RedHat7. The 'gitHyraxCentos7.json' templete builds a 
+machine setup for a source buid using the 'hyrax' GitHub repo.
 
 To use these templates with AWS, goto the CloudFormation services page
 and choose 'Create Stack' on the upper left-hand corner. The only
@@ -23,6 +23,17 @@ use:
         --stack-name Hyrax-8 --parameter-overrides KeyName=opendap-test-aws-east-2017
 
 Note that the PEM file name lacks the '.pem' extension.
+
+Also, just a bit of a reminder WRT 'aws' and credentials, if your ~/.aws/credentials
+file lists a public and private key you want to use under a profile, you should
+provide that and the region, like this:
+
+    aws --profile jimg --region us-east-1 cloudformation deploy \
+        --template-file gitHyraxCentos7.json --stack-name Hyrax-git-01 \
+        --parameter-overrides KeyName=opendap-test-aws-east-2017
+        
+KeyName is the name of the pem file used to grant access to the host your building,
+the --profile and --region are used by the 'aws' command line client.
 
 The AMI instance numbers were fund using the Cloud Market site:
 https://thecloudmarket.com. 
