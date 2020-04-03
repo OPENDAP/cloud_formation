@@ -2,7 +2,7 @@
 This directory contains AWS Cloud Formation templates that build
 various sorts of AMIs that run the Hyrax web server. Current versions
 use the RPM packages stored on S3 or www.OPeNDAP.org and support
-CentOS7 adn RedHat7. We might add versions that build development
+CentOS7 and RedHat7. We might add versions that build development
 machines in the future.
 
 To use these templates with AWS, goto the CloudFormation services page
@@ -24,7 +24,7 @@ use:
 
 Note that the PEM file name lacks the '.pem' extension.
 
-The AMI instamce numbers were fund using the Cloud Market site:
+The AMI instance numbers were fund using the Cloud Market site:
 https://thecloudmarket.com. 
 
 Amazon has a set of utilities that can be installed by yum. Look at this
